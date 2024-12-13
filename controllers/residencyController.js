@@ -44,7 +44,7 @@ export const getResidency = asynchHandler(async(req,res)=>{
     }
 })
 
-export const bookVisit = asyncHandler(async (req, res) => {
+export const bookVisit = asynchHandler(async (req, res) => {
     const { value, propertyId, email } = req.body;
 
     // Make sure all required data is present
