@@ -43,3 +43,27 @@ export const getResidency = asynchHandler(async(req,res)=>{
         throw new Error(err.message)
     }
 })
+
+export const bookVisit = asyncHandler(async (req, res) => {
+    const { value, propertyId, email } = req.body;
+
+    // Make sure all required data is present
+    if (!value || !propertyId || !email) {
+        return res.status(400).send({ message: "Missing required fields" });
+    }
+
+    try {
+        // Save the booking to the database
+        const booking = await prisma.booking.create({
+            data: {
+                visitDate: value,
+                propertyId: propertyId,
+                userEmail: email,
+            }
+        });
+
+        res.status(200).send({ message: 'Booking successful', booking });
+    } catch (err) {
+        res.status(500).send({ message: 'Error booking visit', error: err.message });
+    }
+});
