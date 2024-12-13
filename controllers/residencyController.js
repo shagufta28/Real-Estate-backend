@@ -2,21 +2,45 @@ import asynchHandler from 'express-async-handler'
 import { prisma } from "../config/prismaConfig.js"
 
 export const createResidency = asynchHandler(async (req, res) => {
-    const { title, description, price, address, city, country, image, facilities, userEmail } = req.body.data
+    const { title, description, price, address, city, country, image, facilities, userEmail } = req.body.data;
 
-    console.log(req.body.data);
+    // Log incoming data for debugging (remove in production)
+    console.log("Residency data received:", req.body.data);
+
+    // Validate required fields
+    if (!title || !description || !price || !address || !city || !country || !image || !userEmail) {
+        res.status(400);
+        throw new Error("All fields are required.");
+    }
+
     try {
+        // Create a new residency in the database
         const residency = await prisma.residency.create({
             data: {
-                title, description, price, address, city, country, image, facilities, owner: { connect: { email: userEmail } }
-            }
-        })
-        res.send({message : "succesfull"})
+                title,
+                description,
+                price: parseFloat(price), // Ensure price is saved as a number
+                address,
+                city,
+                country,
+                image,
+                facilities,
+                owner: { connect: { email: userEmail } }, // Connect to the owner by email
+            },
+        });
+
+        // Respond with success
+        res.status(201).json({ message: "Residency created successfully!", residency });
     } catch (err) {
+        // Handle unique constraint violation (Prisma P2002)
         if (err.code === "P2002") {
-            throw new Error("a residency with same address exist")
+            res.status(400);
+            throw new Error("A residency with the same address already exists.");
         }
-        throw new Error(err.message)
+
+        // Handle other errors
+        res.status(500);
+        throw new Error(err.message || "Failed to create residency.");
     }
 });
 
