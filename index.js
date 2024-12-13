@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({extended:true}))
 
 app.use(cookieParser())
 app.use(cors({
-    origin: 'http://localhost:5173', // Your frontend origin
+    origin: [ 'http://localhost:5173', 'https://estateapp-sigma.vercel.app'], 
     methods: 'GET,POST,PUT,DELETE',
     allowedHeaders: 'Content-Type,Authorization',
   }))
