@@ -1,5 +1,11 @@
-import {PrismaClient} from '@prisma/client'
+import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient()
+export const prisma = new PrismaClient();
 
-export {prisma}
+// Log connection status for debugging
+prisma.$connect()
+  .then(() => console.log('Database connected successfully'))
+  .catch((error) => {
+    console.error('Failed to connect to the database:', error.message);
+    process.exit(1);
+  });
