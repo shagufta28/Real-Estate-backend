@@ -1,7 +1,7 @@
 import {auth} from 'express-oauth2-jwt-bearer'
 
 const jwtCheck = auth({
-    audience: 'https://real-estate-backend-ut61.onrender.com',
+    audience: 'http://localhost:8000',
     issuerBaseURL: "https://realestate-project.us.auth0.com",
     tokenSigningAlg:"RS256"
 })
