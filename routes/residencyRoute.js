@@ -5,7 +5,7 @@ import jwtCheck from '../config/auth0Config.js';
 
 const router = express.Router()
 
-const Property = require('../models/Property'); // Assuming Property model exists
+const Property = require('../models/Property.js'); // Assuming Property model exists
 
 // Route to create a new property
 router.post('/create', async (req, res) => {
