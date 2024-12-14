@@ -1,11 +1,9 @@
 import express from 'express';
 import { createResidency, getAllResidencies , getResidency, bookVisit } from '../controllers/residencyController.js';
 import jwtCheck from '../config/auth0Config.js';
-
+import Property from '../models/Property.js';
 
 const router = express.Router()
-
-const Property = require('../models/Property.js'); // Assuming Property model exists
 
 // Route to create a new property
 router.post('/create', async (req, res) => {
