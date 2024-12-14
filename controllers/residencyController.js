@@ -2,57 +2,48 @@ import asynchHandler from 'express-async-handler'
 import { prisma } from "../config/prismaConfig.js"
 
 export const createResidency = asynchHandler(async (req, res) => {
-    const { title, description, price, address, city, country, image, facilities, userEmail } = req.body.data;
+    const { title, description, price, address, city, country, image, facilities, userEmail } = req.body;
 
-    // Log incoming data for debugging (remove in production)
-    console.log("Residency data received:", req.body.data);
+    console.log("Incoming Residency Data:", req.body); // Debugging log
 
-    // Validate required fields
     if (!title || !description || !price || !address || !city || !country || !image || !userEmail) {
-        res.status(400);
-        throw new Error("All fields are required.");
+        res.status(400).json({ message: "All fields are required." });
+        return;
     }
 
     try {
-        // Create a new residency in the database
+        // Check if user exists
+        const user = await prisma.user.findUnique({ where: { email: userEmail } });
+        if (!user) {
+            return res.status(404).json({ message: "User not found. Cannot assign residency." });
+        }
+
+        // Create the residency
         const residency = await prisma.residency.create({
             data: {
                 title,
                 description,
-                price: parseFloat(price), // Ensure price is saved as a number
+                price: parseFloat(price),
                 address,
                 city,
                 country,
                 image,
                 facilities,
-                owner: { connect: { email: userEmail } }, // Connect to the owner by email
+                owner: { connect: { email: userEmail } }, // Connect to owner by email
             },
         });
 
-        // Respond with success
         res.status(201).json({ message: "Residency created successfully!", residency });
     } catch (err) {
-        // Handle unique constraint violation (Prisma P2002)
+        console.error("Error Creating Residency:", err);
         if (err.code === "P2002") {
-            res.status(400);
-            throw new Error("A residency with the same address already exists.");
+            res.status(400).json({ message: "A residency with the same address already exists." });
+        } else {
+            res.status(500).json({ message: "Failed to create residency.", error: err.message });
         }
-
-        // Handle other errors
-        res.status(500);
-        throw new Error(err.message || "Failed to create residency.");
     }
 });
 
-export const getAllResidencies =  asynchHandler(async(req,res)=>{
-    const residencies = await prisma.residency.findMany({
-        orderBy:{
-            createdAt:"desc"
-        }
-    })
-
-    res.send(residencies);
-})
 
 
 export const getResidency = asynchHandler(async(req,res)=>{

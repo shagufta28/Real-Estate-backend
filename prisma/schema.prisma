@@ -15,7 +15,7 @@ model User {
   email            String      @unique
   image            String?
   bookedVisites    Json[]
-  favResidenciesiD String[]    @db.ObjectId
+  favResidenciesID String[]    @db.ObjectId
   ownResidencies   Residency[] @relation("Owner")
 }
 
