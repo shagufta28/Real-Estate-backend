@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const residencySchema = new mongoose.Schema({
+const PropertySchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
   price: { type: Number, required: true },
@@ -12,6 +12,6 @@ const residencySchema = new mongoose.Schema({
   owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
 }, { timestamps: true });
 
-const Residency = mongoose.model('Residency', residencySchema);
+const Property = mongoose.model('Property', PropertySchema);
 
-export default Residency;
+export default Property;
