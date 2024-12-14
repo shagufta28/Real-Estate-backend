@@ -82,3 +82,12 @@ export const bookVisit = asynchHandler(async (req, res) => {
         res.status(500).send({ message: 'Error booking visit', error: err.message });
     }
 });
+// Get All Residencies
+export const getAllResidencies = asynchHandler(async (req, res) => {
+    try {
+        const residencies = await prisma.residency.findMany();
+        res.status(200).json({ message: "All residencies fetched successfully", residencies });
+    } catch (err) {
+        res.status(500).json({ message: "Error fetching residencies", error: err.message });
+    }
+});
